@@ -37,7 +37,29 @@ public class Gun : MonoBehaviour
 
                 _last_shoot_time = Time.time;
             }
+            else
+            {
+                TrailRenderer trail = Instantiate(_bulletTrail, _bullet_spawn_point.position, Quaternion.identity);
+
+                StartCoroutine(SpawnTrail(trail, direction));
+            }
         }
+    }
+
+    protected IEnumerator SpawnTrail(TrailRenderer Trail, Vector3 Direction)
+    {
+        float time = 0;
+        Vector3 startPos = Trail.transform.position;
+        while (time < 1)
+        {
+            Trail.transform.position = Vector3.Lerp(startPos, startPos + Direction*100f, time);
+            time += Time.deltaTime / Trail.time;
+            yield return null;
+        }
+        Trail.transform.position = startPos + Direction * 100f;
+
+
+        Destroy(Trail.gameObject, Trail.time);
     }
 
     protected Vector3 GetDirection()

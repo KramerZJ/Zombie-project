@@ -22,6 +22,13 @@ public class ShotGun : Gun
                     StartCoroutine(SpawnTrail(trail, hit));
                     direction = GetDirection();
                 }
+                else
+                {
+                    TrailRenderer trail = Instantiate(_bulletTrail, _bullet_spawn_point.position, Quaternion.identity);
+
+                    StartCoroutine(SpawnTrail(trail, direction));
+                    direction = GetDirection();
+                }
             }
             _last_shoot_time = Time.time;
         }
