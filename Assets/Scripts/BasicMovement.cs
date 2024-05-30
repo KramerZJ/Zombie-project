@@ -4,54 +4,58 @@ using UnityEngine;
 
 public class BasicMovement : MonoBehaviour
 {
-    [SerializeField] private CharacterController controller;
-    [SerializeField] private float speed = 10f, gravity = -9.8f,checkLength = 0.1f,jumpHeight =2f;
+    [SerializeField] private CharacterController _controller;
+    [SerializeField, Range(0,50f)] private float _speed = 10f;
+    [SerializeField, Range(-20f,0)] private float _gravity = -9.8f;
+    [SerializeField, Range(0.4f,1f)] private float _checkLength = 0.1f;
+    [SerializeField, Range(0,0.5f)] private float _jumpHeight =0.1f;
 
-    private Vector3 velocity;
+    private Vector3 _velocity;
 
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundMask;
-    bool isGround;
+    [SerializeField] private Transform _groundCheck;
+    [SerializeField] private LayerMask _groundMask;
+    private bool _isGround;
+    public bool isGrounded { get => _isGround; }
     // Update is called once per frame
     void Update()
     {
-        isGround = Physics.CheckSphere(groundCheck.position, checkLength, groundMask);
+        _isGround = Physics.CheckSphere(_groundCheck.position, _checkLength, _groundMask);
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
 
-        controller.Move(move *speed* Time.deltaTime);//basic movement
+        _controller.Move(move *_speed* Time.deltaTime);//basic movement
 
-        if (Input.GetButtonDown("Jump") && isGround)//jump
+        if (Input.GetButtonDown("Jump") && _isGround)//jump
         {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            _velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
         }
 
     }
     private void FixedUpdate()
     {
 
-        if (isGround && velocity.y < 0)
+        if (_isGround && _velocity.y < 0)
         {
-            velocity.y = -0.1f;
+            _velocity.y = -0.1f;
         }
-        if (velocity.y>0)
+        if (_velocity.y>0)
         {
-            velocity.y += gravity * Time.deltaTime / 2;
+            _velocity.y += _gravity * Time.deltaTime / 2;
         }
         else
         {
-            velocity.y += gravity * Time.deltaTime/4;
+            _velocity.y += _gravity * Time.deltaTime/4;
         }
         
-        controller.Move(velocity/2);//fall
+        _controller.Move(_velocity/2);//fall
 
     }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(groundCheck.position, checkLength);
+        Gizmos.DrawSphere(_groundCheck.position, _checkLength);
     }
 }
