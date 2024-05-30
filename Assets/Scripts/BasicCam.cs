@@ -24,7 +24,7 @@ public class BasicCam : MonoBehaviour
         float mouseY= Input.GetAxisRaw("Mouse Y")* Time.deltaTime*_sensY;
 
         _xRotation -= mouseY;
-        _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
+        _xRotation = Mathf.Clamp(_xRotation, -87f, 87f);
 
         transform.localRotation = Quaternion.Euler(_xRotation, 0, 0);
         _BodyOrientation.Rotate(Vector3.up * mouseX);

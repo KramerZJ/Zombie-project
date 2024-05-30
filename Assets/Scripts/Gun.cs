@@ -5,23 +5,23 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class Gun : MonoBehaviour
 {
-    [SerializeField] private bool _bullet_spread = true;
-    [SerializeField] private Vector3 _bullet_spread_variance = new Vector3(0.1f, 0.1f, 0.1f);
-    [SerializeField] private ParticleSystem _shooting_system,_impact_particle;
-    [SerializeField] private Transform _bullet_spawn_point;
-    [SerializeField] private TrailRenderer _bulletTrail;
-    [SerializeField] private float _shoot_delay = 0.3f;
-    [SerializeField] private LayerMask _mask;
+    [SerializeField] protected bool _bullet_spread = true;
+    [SerializeField] protected Vector3 _bullet_spread_variance = new Vector3(0.1f, 0.1f, 0.1f);
+    [SerializeField] protected ParticleSystem _shooting_system,_impact_particle;
+    [SerializeField] protected Transform _bullet_spawn_point;
+    [SerializeField] protected TrailRenderer _bulletTrail;
+    [SerializeField] protected float _shoot_delay = 0.3f;
+    [SerializeField] protected LayerMask _mask;
 
-    private Animator _animator;
+    protected Animator _animator;
 
-    private float _last_shoot_time;
+    protected float _last_shoot_time;
     private void Awake()
     {
         _animator = GetComponent<Animator>();
         _last_shoot_time = Time.time;
     }
-     public void Shoot()
+     public virtual void Shoot()
     {
         if(_last_shoot_time + _shoot_delay < Time.time)
         {
@@ -40,7 +40,7 @@ public class Gun : MonoBehaviour
         }
     }
 
-    private Vector3 GetDirection()
+    protected Vector3 GetDirection()
     {
         Vector3 direction = transform.forward;
         if (_bullet_spread)
@@ -55,7 +55,7 @@ public class Gun : MonoBehaviour
         return direction;
     }
 
-    private IEnumerator SpawnTrail(TrailRenderer Trail, RaycastHit Hit)
+    protected IEnumerator SpawnTrail(TrailRenderer Trail, RaycastHit Hit)
     {
         float time = 0;
         Vector3 startPos = Trail.transform.position;
