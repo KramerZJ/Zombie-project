@@ -7,10 +7,11 @@ public class Gun : MonoBehaviour
 {
     [SerializeField] protected bool _bullet_spread = true;
     [SerializeField] protected Vector3 _bullet_spread_variance = new Vector3(0.1f, 0.1f, 0.1f);
-    [SerializeField] protected ParticleSystem _shooting_system,_impact_particle;
+    [SerializeField] protected ParticleSystem _shooting_system,_impact_particle,_zombie_impact_particle;
     [SerializeField] protected Transform _bullet_spawn_point;
     [SerializeField] protected TrailRenderer _bulletTrail;
     [SerializeField] protected float _shoot_delay = 0.3f;
+    [SerializeField] protected int _damage_per_hit = 14;
     [SerializeField] protected LayerMask _mask;
 
     protected Animator _animator;
@@ -32,7 +33,6 @@ public class Gun : MonoBehaviour
             if (Physics.Raycast(_bullet_spawn_point.position, direction, out RaycastHit hit, float.MaxValue, _mask))
             {
                 TrailRenderer trail = Instantiate(_bulletTrail, _bullet_spawn_point.position, Quaternion.identity);
-                
                 StartCoroutine(SpawnTrail(trail, hit));
 
                 _last_shoot_time = Time.time;
@@ -88,9 +88,25 @@ public class Gun : MonoBehaviour
             yield return null;
         }
         Trail.transform.position = Hit.point;
+        if (Hit.collider.gameObject.layer == LayerMask.NameToLayer("Zombie")){
+            Instantiate(_zombie_impact_particle, Hit.point, Quaternion.LookRotation(Hit.normal));
+            if (Hit.collider is SphereCollider)
+            {
+                if(Hit.collider.gameObject.TryGetComponent<ZombieHealth>(out ZombieHealth _zombieHealth))
+                    _zombieHealth.Damage(_damage_per_hit,true);
+            }else if (Hit.collider is CapsuleCollider)
+            {
+                if (Hit.collider.gameObject.TryGetComponent<ZombieHealth>(out ZombieHealth _zombieHealth))
+                    _zombieHealth.Damage(_damage_per_hit, false);
+            }
 
-        Instantiate(_impact_particle, Hit.point, Quaternion.LookRotation(Hit.normal));
-
+            
+        }
+        else
+        {
+            Instantiate(_impact_particle, Hit.point, Quaternion.LookRotation(Hit.normal));
+        }
+        
         Destroy(Trail.gameObject, Trail.time);
     }
 }

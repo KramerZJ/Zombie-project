@@ -9,7 +9,7 @@ public class Health : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _max_health = _curr_health;//or if we have saving file, use number in saving file
+        _curr_health = _max_health;//or if we have saving file, use number in saving file
     }
 
     public virtual void Damage(int input_Damage)
